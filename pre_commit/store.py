@@ -140,6 +140,12 @@ class Store(object):
         """Perform a complete clone of a repository and its submodules """
 
         git_cmd('fetch', 'origin', '--tags')
+        # old git versions like 1.8.1 would fail to pull newer revisions, so
+        # if we fail to find the revision, we do a full pull.
+        x = git_cmd('git', 'cat-file', '-t', ref)
+        print(x)
+        git_cmd('git', 'pull')
+
         git_cmd('checkout', ref)
         git_cmd('submodule', 'update', '--init', '--recursive')
 
